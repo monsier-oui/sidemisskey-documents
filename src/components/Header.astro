@@ -1,0 +1,144 @@
+---
+import { Image } from 'astro:assets'
+
+import loadConfig from 'tailwindcss/loadConfig'
+import resolveConfig from 'tailwindcss/resolveConfig'
+
+import logo from '@/images/common/logo.png'
+
+const twConfig = resolveConfig(
+  loadConfig(`${process.env.PWD}/tailwind.config.ts`)
+)
+const gnavItems = [
+  {
+    title: 'ホーム',
+    href: '/',
+  },
+  {
+    title: 'さいどみすきー',
+    href: 'https://side.misskey.productions',
+  },
+]
+---
+
+<header
+  class="sticky top-0 flex h-header-height items-center border-b bg-white px-4">
+  <a href="/" class="flex shrink-0 items-center gap-2">
+    <Image src={logo} alt="" class="w-10" />
+    <span class="sr-only md:not-sr-only">さいどみすきードキュメント</span>
+  </a>
+  <nav class="absolute right-0 ml-auto lg:relative">
+    <button
+      id="gnav-toggle"
+      class="left-auto block lg:hidden"
+      type="button"
+      aria-label="メニュー"
+      aria-controls="gnav"
+      aria-expanded="false">
+      {/* https://codepen.io/shephero/pen/LYVrdjX */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 10 10"
+        stroke-linecap="round"
+        class="h-header-height w-auto fill-transparent stroke-current stroke-[0.6]">
+        <path d="M2,3L5,3L8,3M2,5L8,5M2,7L5,7L8,7">
+          <animate
+            dur="0.2s"
+            attributeName="d"
+            values="M2,3L5,3L8,3M2,5L8,5M2,7L5,7L8,7;M3,3L5,5L7,3M5,5L5,5M3,7L5,5L7,7"
+            fill="freeze"
+            begin="start.begin"></animate>
+          <animate
+            dur="0.2s"
+            attributeName="d"
+            values="M3,3L5,5L7,3M5,5L5,5M3,7L5,5L7,7;M2,3L5,3L8,3M2,5L8,5M2,7L5,7L8,7"
+            fill="freeze"
+            begin="reverse.begin"></animate>
+        </path>
+        <rect width="10" height="10" stroke="none">
+          <animate dur="2s" id="reverse" attributeName="width" begin="click"
+          ></animate>
+        </rect>
+        <rect width="10" height="10" stroke="none">
+          <animate
+            dur="0.001s"
+            id="start"
+            attributeName="width"
+            values="10;0"
+            fill="freeze"
+            begin="click"></animate>
+          <animate
+            dur="0.001s"
+            attributeName="width"
+            values="0;10"
+            fill="freeze"
+            begin="reverse.begin"></animate>
+        </rect>
+      </svg>
+    </button>
+
+    <div
+      id="gnav"
+      aria-hidden="true"
+      class="gnav container absolute right-0 top-full flex w-screen flex-col bg-white py-4 transition-all lg:relative lg:top-0 lg:w-auto lg:flex-row lg:items-center lg:py-0">
+      <ul class="lg:flex">
+        {
+          gnavItems.map(({ title, href }) => (
+            <li class="">
+              <a href={href} class="block p-4">
+                {title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<script define:vars={{ breakpoint: twConfig.theme.screens.lg }} is:inline>
+  const toggle = document.getElementById('gnav-toggle')
+  const gnavId = toggle && toggle.getAttribute('aria-controls')
+  const gnav = gnavId && document.getElementById(gnavId)
+
+  const mediaQueryList = window.matchMedia(`(min-width: ${breakpoint})`)
+  const setHeaderVisibility = (mediaquery) => {
+    gnav.setAttribute('aria-hidden', (!mediaquery.matches).toString())
+  }
+  mediaQueryList.addEventListener('change', setHeaderVisibility)
+  setHeaderVisibility(mediaQueryList)
+
+  toggle.addEventListener('click', () => {
+    toggle.setAttribute(
+      'aria-expanded',
+      (toggle.getAttribute('aria-expanded') === 'false').toString()
+    )
+
+    gnav.setAttribute(
+      'aria-hidden',
+      (gnav.getAttribute('aria-hidden') === 'false').toString()
+    )
+  })
+</script>
+
+<style is:global>
+  :root {
+    --header-height: theme('spacing.16');
+  }
+
+  .gnav {
+    height: calc(100dvh - theme('spacing.header-height'));
+    opacity: 1;
+    overflow: auto;
+
+    &[aria-hidden='true'] {
+      height: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    @screen md {
+      height: auto;
+    }
+  }
+</style>

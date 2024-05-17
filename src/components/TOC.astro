@@ -1,0 +1,97 @@
+---
+import * as cheerio from 'cheerio'
+import { HiChevronDown } from 'react-icons/hi2'
+
+interface Heading {
+  id: string
+  text: string
+  children: Heading[]
+}
+
+const { body } = Astro.props
+const $ = cheerio.load(body)
+const toc: Heading[] = []
+let i = -1
+let j = -1
+const headings = $('h2,h3,h4').toArray()
+for (const heading of headings) {
+  // console.log(heading)
+  if (heading.name === 'h2') {
+    i++
+    j = -1
+    toc[i] = {
+      id: heading.attribs.id,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      text: (heading.children[0] as any).data,
+      children: [],
+    }
+  } else if (heading.name === 'h3' && i > -1) {
+    j++
+    toc[i]['children'][j] = {
+      id: heading.attribs.id,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      text: (heading.children[0] as any).data,
+      children: [],
+    }
+  } else if (heading.name === 'h4' && j > -1) {
+    toc[i]['children'][j]['children'].push({
+      id: heading.attribs.id,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      text: (heading.children[0] as any).data,
+      children: [],
+    })
+  }
+}
+---
+
+<details class="my-8">
+  <summary class="p-2 text-lg font-medium">
+    目次<HiChevronDown className="ml-2" />
+  </summary>
+  <ol class="w-fit bg-gray-200 p-4 md:px-6">
+    {
+      toc.map(({ id, text, children }) => (
+        <li>
+          <a href={`#${id}`}>{text}</a>
+          {children && (
+            <ol class="ml-4">
+              {children.map(({ id, text, children }) => (
+                <li>
+                  <a href={`#${id}`}>{text}</a>
+                  {children && (
+                    <ol class="ml-4">
+                      {children.map(({ id, text }) => (
+                        <li>
+                          <a href={`#${id}`}>{text}</a>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </li>
+              ))}
+            </ol>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</details>
+
+<style>
+  summary {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    list-style: none;
+
+    svg {
+      details[open] > & {
+        rotate: 180deg;
+      }
+    }
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

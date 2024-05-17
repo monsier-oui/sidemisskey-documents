@@ -1,0 +1,8 @@
+a:not([class]) {
+  @apply hover:underline;
+}
+
+button {
+  touch-action: manipulation;
+  user-select: none;
+}

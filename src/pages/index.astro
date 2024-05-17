@@ -1,0 +1,30 @@
+---
+import { Image } from 'astro:assets'
+
+import banner from '@/images/common/banner.png'
+import Layout from '@/layouts/Base.astro'
+import type { Page } from '@/libs/pages'
+import { getAllPages } from '@/libs/pages'
+
+const pages: Page[] = await getAllPages()
+---
+
+<Layout title="">
+  <h1
+    class="grid h-40 w-full place-content-center place-items-center bg-primary md:h-80">
+    <Image src={banner} alt="" width={520} height={107} class="max-w-[80%]" />
+    <span class="sr-only">さいどみすきードキュメント</span>
+  </h1>
+  <ul class="mt-12">
+    {
+      pages.map(({ id, title, emoji }) => (
+        <li>
+          <a href={`/${id}`} class="flex items-baseline gap-2">
+            <span>{emoji}</span>
+            <span>{title}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>
