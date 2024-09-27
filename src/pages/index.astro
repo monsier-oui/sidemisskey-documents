@@ -15,11 +15,11 @@ const pages: Page[] = await getAllPages()
     <Image src={banner} alt="" width={520} height={107} class="max-w-[80%]" />
     <span class="sr-only">さいどみすきードキュメント</span>
   </h1>
-  <ul class="mt-12">
+  <ul class="menu mt-12">
     {
       pages.map(({ id, title, emoji }) => (
         <li>
-          <a href={`/${id}`} class="flex items-baseline gap-2">
+          <a href={`/${id}`}>
             <span>{emoji}</span>
             <span>{title}</span>
           </a>
