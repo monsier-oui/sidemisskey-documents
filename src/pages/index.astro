@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets'
 
+import twemoji from '@twemoji/api'
+
 import banner from '@/images/common/banner.png'
 import Layout from '@/layouts/Base.astro'
 import type { Page } from '@/libs/pages'
@@ -20,7 +22,9 @@ const pages: Page[] = await getAllPages()
       pages.map(({ id, title, emoji }) => (
         <li>
           <a href={`/${id}`}>
-            <span>{emoji}</span>
+            <span class="size-6">
+              {emoji && <Fragment set:html={twemoji.parse(emoji)} />}
+            </span>
             <span>{title}</span>
           </a>
         </li>
