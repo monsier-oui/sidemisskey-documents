@@ -22,7 +22,7 @@ const gnavItems = [
 ---
 
 <header
-  class="sticky top-0 z-40 flex h-header-height items-center border-b bg-white px-4">
+  class="sticky top-0 z-40 flex h-header-height items-center bg-base-100 px-4">
   <a href="/" class="flex shrink-0 items-center gap-2">
     <Image src={logo} alt="" class="w-10" />
     <span class="sr-only md:not-sr-only">さいどみすきードキュメント</span>
@@ -80,7 +80,7 @@ const gnavItems = [
     <div
       id="gnav"
       aria-hidden="true"
-      class="gnav container absolute right-0 top-full flex w-screen flex-col bg-white py-4 transition-all lg:relative lg:top-0 lg:w-auto lg:flex-row lg:items-center lg:py-0">
+      class="gnav container absolute right-0 top-full flex w-screen flex-col bg-base-100 py-4 transition-all lg:relative lg:top-0 lg:w-auto lg:flex-row lg:items-center lg:py-0">
       <ul class="lg:flex">
         {
           gnavItems.map(({ title, href }) => (
