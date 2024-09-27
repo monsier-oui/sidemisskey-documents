@@ -15,6 +15,10 @@ const config: Config = {
         DEFAULT: '1rem',
         lg: '0',
       },
+      screens: {
+        sm: defaultTheme.screens.sm,
+        md: defaultTheme.screens.md,
+      },
     },
     extend: {
       colors: {
