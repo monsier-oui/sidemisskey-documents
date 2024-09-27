@@ -5,6 +5,11 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 
 const config: Config = {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  safelist: [
+    {
+      pattern: /alert(-\w+)?/,
+    },
+  ],
   future: {
     hoverOnlyWhenSupported: true,
   },
