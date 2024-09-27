@@ -1,6 +1,7 @@
 ---
 import dayjs from 'dayjs'
 
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import TOC from '@/components/TOC.astro'
 import type { PageProps } from '@/env'
 import Layout from '@/layouts/Base.astro'
@@ -20,6 +21,7 @@ export async function getStaticPaths() {
   }))
 }
 
+const { slug } = Astro.params
 const { page } = Astro.props
 
 const props: PageProps = {
@@ -32,6 +34,15 @@ const props: PageProps = {
 ---
 
 <Layout {...props}>
+  <Breadcrumbs
+    items={[
+      {
+        title: page.title,
+        href: `/${slug}`,
+      },
+    ]}
+  />
+
   <header class="flex flex-col">
     <span class="self-center text-6xl">{page.emoji}</span>
     <h1 class="mt-6 text-2xl font-bold md:text-4xl">{page.title}</h1>

@@ -1,0 +1,27 @@
+---
+export interface Props {
+  items: {
+    title: string
+    href: string
+  }[]
+}
+
+const { items } = Astro.props
+---
+
+{
+  items.length > 0 && (
+    <div class="breadcrumbs max-w-full text-sm">
+      <ul>
+        <li>
+          <a href="/">ホーム</a>
+        </li>
+        {items.map(({ title, href }) => (
+          <li>
+            <a href={href}>{title}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
