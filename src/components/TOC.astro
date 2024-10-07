@@ -1,97 +1,46 @@
 ---
-import * as cheerio from 'cheerio'
-import { HiChevronDown } from 'react-icons/hi2'
-
-interface Heading {
-  id: string
-  text: string
-  children: Heading[]
-}
-
-const { body } = Astro.props
-const $ = cheerio.load(body)
-const toc: Heading[] = []
-let i = -1
-let j = -1
-const headings = $('h2,h3,h4').toArray()
-for (const heading of headings) {
-  // console.log(heading)
-  if (heading.name === 'h2') {
-    i++
-    j = -1
-    toc[i] = {
-      id: heading.attribs.id,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      text: (heading.children[0] as any).data,
-      children: [],
-    }
-  } else if (heading.name === 'h3' && i > -1) {
-    j++
-    toc[i]['children'][j] = {
-      id: heading.attribs.id,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      text: (heading.children[0] as any).data,
-      children: [],
-    }
-  } else if (heading.name === 'h4' && j > -1) {
-    toc[i]['children'][j]['children'].push({
-      id: heading.attribs.id,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      text: (heading.children[0] as any).data,
-      children: [],
-    })
+interface Headings {
+  subheadings: {
+    text: string
+    id: string
+    depth: string
   }
+  depth?: number
 }
+
+export interface Props {
+  headings: Headings[]
+  depth?: number
+}
+
+const { headings, depth = 2 } = Astro.props
+
+const hierarchy = headings.reduce((array, heading) => {
+  if (depth > 4) {
+    return array
+  }
+
+  if (heading.depth === depth) {
+    array.push({ ...heading, subheadings: [] })
+  } else {
+    array.at(-1)?.subheadings.push(heading)
+  }
+
+  return array
+}, [] as Headings[])
 ---
 
-<details class="my-8">
-  <summary class="p-2 text-lg font-medium">
-    目次<HiChevronDown className="ml-2" />
-  </summary>
-  <ol class="w-fit bg-base-200 p-4 md:px-6">
-    {
-      toc.map(({ id, text, children }) => (
-        <li>
+{
+  hierarchy && (
+    <ol class={depth > 2 && 'pl-4'}>
+      {hierarchy.map(({ id, text, subheadings }) => (
+        <li class="">
           <a href={`#${id}`}>{text}</a>
-          {children && (
-            <ol class="ml-4">
-              {children.map(({ id, text, children }) => (
-                <li>
-                  <a href={`#${id}`}>{text}</a>
-                  {children && (
-                    <ol class="ml-4">
-                      {children.map(({ id, text }) => (
-                        <li>
-                          <a href={`#${id}`}>{text}</a>
-                        </li>
-                      ))}
-                    </ol>
-                  )}
-                </li>
-              ))}
-            </ol>
+          {subheadings.length > 0 && (
+            <Astro.self headings={subheadings} depth={depth + 1} />
           )}
         </li>
-      ))
-    }
-  </ol>
-</details>
-
-<style>
-  summary {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    list-style: none;
-
-    svg {
-      details[open] > & {
-        rotate: 180deg;
-      }
-    }
-  }
-
-  summary::-webkit-details-marker {
-    display: none;
-  }
-</style>
+      ))}
+    </ol>
+  )
+}
