@@ -1,5 +1,5 @@
 ---
-interface Headings {
+interface Heading {
   subheadings: {
     text: string
     id: string
@@ -9,7 +9,7 @@ interface Headings {
 }
 
 export interface Props {
-  headings: Headings[]
+  headings: Heading[]
   depth?: number
 }
 
@@ -27,7 +27,7 @@ const hierarchy = headings.reduce((array, heading) => {
   }
 
   return array
-}, [] as Headings[])
+}, [] as Heading[])
 ---
 
 {
