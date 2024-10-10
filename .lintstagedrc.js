@@ -1,4 +1,5 @@
 export default {
   '*.css': ['prettier --write'],
-  '*.{js,cjs,ts,tsx,astro}': ['prettier --write', 'eslint --fix'],
+  '*.astro': ['prettier --write', 'eslint --fix', 'astro check'],
+  '*.{js,cjs,ts,tsx}': ['prettier --write', 'eslint --fix'],
 }
