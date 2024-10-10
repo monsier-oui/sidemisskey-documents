@@ -1,6 +1,5 @@
 ---
 import twemoji from '@twemoji/api'
-import * as cheerio from 'cheerio'
 import dayjs from 'dayjs'
 import { HiChevronDown } from 'react-icons/hi2'
 
@@ -8,7 +7,7 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import TOC from '@/components/TOC.astro'
 import type { PageProps } from '@/env'
 import Layout from '@/layouts/Base.astro'
-import { getAllPages, addHeadingLink } from '@/libs/pages'
+import { getAllPages, getHeadings } from '@/libs/pages'
 import type { Page } from '@/libs/pages'
 
 export async function getStaticPaths() {
@@ -35,14 +34,7 @@ page.body = page.body
     'alert-warning">',
     'alert-warning"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>'
   )
-const $ = cheerio.load(page.body)
-const headings = $('h2,h3,h4')
-  .toArray()
-  .map((data) => ({
-    text: data.children[0].data,
-    id: data.attribs.id,
-    depth: Number(data.name.substring(1)),
-  }))
+const headings = getHeadings(page.body)
 
 const props: PageProps = {
   title: page.title,
@@ -96,7 +88,7 @@ const props: PageProps = {
 
   <article class="article mt-12">
     <div class="prose max-w-none">
-      <Fragment set:html={addHeadingLink(page.body)} />
+      <Fragment set:html={page.body} />
     </div>
     <footer class="mt-8"></footer>
   </article>

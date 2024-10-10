@@ -1,21 +1,18 @@
 ---
-interface Heading {
-  subheadings: {
-    text: string
-    id: string
-    depth: string
-  }
+import type { Heading } from '@/libs/pages'
+
+export interface Props {
+  headings?: Heading[]
   depth?: number
 }
 
-export interface Props {
-  headings: Heading[]
-  depth?: number
+interface HeadingWithSubHeadings extends Heading {
+  subheadings: Heading[]
 }
 
 const { headings, depth = 2 } = Astro.props
 
-const hierarchy = headings.reduce((array, heading) => {
+const hierarchy = headings?.reduce((array, heading) => {
   if (depth > 4) {
     return array
   }
@@ -27,12 +24,12 @@ const hierarchy = headings.reduce((array, heading) => {
   }
 
   return array
-}, [] as Heading[])
+}, [] as HeadingWithSubHeadings[])
 ---
 
 {
   hierarchy && (
-    <ol class={depth > 2 && 'pl-4'}>
+    <ol class={depth > 2 ? 'pl-4' : ''}>
       {hierarchy.map(({ id, text, subheadings }) => (
         <li class="">
           <a href={`#${id}`}>{text}</a>

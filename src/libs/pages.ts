@@ -1,4 +1,4 @@
-import * as cheerio from 'cheerio'
+import { JSDOM } from 'jsdom'
 import type {
   MicroCMSQueries,
   MicroCMSDate,
@@ -42,14 +42,19 @@ export const getPage = async (
   return response
 }
 
-// 見出しにリンクを追加
-export const addHeadingLink = (body: string): string => {
-  const $ = cheerio.load(body)
-  $('h2,h3,h4').map((_, heading) => {
-    return $(heading).append(
-      `<a href="#${heading.attribs.id}" class="ml-1 opacity-50 hover:opacity-100 no-underline">#</a>`
-    )
-  })
+export interface Heading {
+  text: string
+  id: string
+  depth?: number
+}
 
-  return $.html('body>*')
+// 見出しを抽出
+export const getHeadings = (body: string): Heading[] => {
+  return Array.from(
+    JSDOM.fragment(body).querySelectorAll<HTMLHeadingElement>('h2,h3,h4')
+  ).map((node) => ({
+    text: node.textContent || '',
+    id: node.id,
+    depth: Number(node.nodeName.substring(1)),
+  }))
 }
