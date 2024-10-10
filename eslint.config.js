@@ -10,7 +10,7 @@ import tseslint from 'typescript-eslint'
 const tsConfig = tseslint.config(...tseslint.configs.recommended)
 
 export default [
-  { ignores: ['./dist'] },
+  { ignores: ['dist'] },
   ...tsConfig,
   eslint.configs.recommended,
   ...pluginAstro.configs.recommended,
