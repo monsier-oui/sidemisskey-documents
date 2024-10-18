@@ -17,6 +17,9 @@ const pages: Page[] = await getAllPages()
     <Image src={banner} alt="" width={520} height={107} class="max-w-[80%]" />
     <span class="sr-only">さいどみすきードキュメント</span>
   </h1>
+  <p class="py-5">
+    さいどみすきーは、『アイドルマスターSideM』が「すきー」な方が、わいわい……がやがや……できることを目的としたMisskeyサーバーです。
+  </p>
   <ul class="menu mt-12">
     {
       pages.map(({ id, title, emoji }) => (
