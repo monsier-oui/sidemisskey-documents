@@ -1,28 +1,43 @@
-import eslint from '@eslint/js'
-import pluginTypeScript from '@typescript-eslint/eslint-plugin'
-import parserTypeScript from '@typescript-eslint/parser'
+import js from '@eslint/js'
+import { defineConfig } from 'eslint/config'
+import configGitignore from 'eslint-config-flat-gitignore'
 import configPrettier from 'eslint-config-prettier'
 import pluginAstro from 'eslint-plugin-astro'
 import pluginImport from 'eslint-plugin-import'
+import pluginReact from 'eslint-plugin-react'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
-const tsConfig = tseslint.config(...tseslint.configs.recommended)
-
-export default [
-  { ignores: ['dist'] },
-  ...tsConfig,
-  eslint.configs.recommended,
+export default defineConfig([
+  // .gitignoreを参照
+  configGitignore(),
+  // JavaScript, TypeScript
+  {
+    files: ['**/*.{js,ts,jsx,tsx}'],
+    plugins: { js },
+    extends: ['js/recommended'],
+  },
+  // TypeScript
+  tseslint.configs.recommended,
+  // React
+  {
+    files: ['**/*.{jsx,tsx}'],
+    ...pluginReact.configs.flat.recommended,
+    ...pluginReact.configs.flat['jsx-runtime'],
+    languageOptions: {
+      ...pluginReact.configs.flat.recommended.languageOptions,
+      globals: {
+        ...globals.serviceworker,
+        ...globals.browser,
+      },
+    },
+  },
+  // Astro
   ...pluginAstro.configs.recommended,
   ...pluginAstro.configs['jsx-a11y-recommended'],
-  configPrettier,
+  // Common
   {
-    files: ['**/*.{js,jsx,ts,tsx,astro}'],
     languageOptions: {
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
       globals: {
         ...globals.browser,
         ...globals.node,
@@ -32,19 +47,12 @@ export default [
       import: pluginImport,
     },
     settings: {
-      'import/parsers': {
-        '@typescript-eslint/parser': ['.js', '.jsx', '.ts', '.tsx'],
-      },
       'import/resolver': {
-        node: {
-          extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        },
         typescript: {},
       },
-      'import/core-modules': ['astro:assets'],
+      'import/core-modules': ['astro:assets', 'astro:transitions'],
     },
     rules: {
-      ...pluginImport.configs['recommended'].rules,
       'import/order': [
         'warn',
         {
@@ -52,25 +60,8 @@ export default [
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
-      'import/no-named-as-default-member': 'off',
     },
   },
-  {
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      parser: parserTypeScript,
-      parserOptions: {
-        project: ['tsconfig.json'],
-      },
-    },
-    plugins: {
-      '@typescript-eslint': pluginTypeScript,
-    },
-  },
-  {
-    files: ['**/*.d.ts'],
-    rules: {
-      '@typescript-eslint/triple-slash-reference': 'off',
-    },
-  },
-]
+  // Prettier
+  configPrettier,
+])

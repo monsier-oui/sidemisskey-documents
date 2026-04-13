@@ -1,14 +1,8 @@
 ---
 import { Image } from 'astro:assets'
 
-import loadConfig from 'tailwindcss/loadConfig'
-import resolveConfig from 'tailwindcss/resolveConfig'
-
 import logo from '@/images/common/logo.png'
 
-const twConfig = resolveConfig(
-  loadConfig(`${process.env.PWD}/tailwind.config.ts`)
-)
 const gnavItems = [
   {
     title: 'ホーム',
@@ -22,7 +16,7 @@ const gnavItems = [
 ---
 
 <header
-  class="sticky top-0 z-40 flex h-header-height items-center bg-base-100 px-4">
+  class="h-header-height bg-base-100 sticky top-0 z-40 flex items-center px-4">
   <a href="/" class="flex shrink-0 items-center gap-2">
     <Image src={logo} alt="" class="w-10" />
     <span class="sr-only md:not-sr-only">さいどみすきーInfo</span>
@@ -80,7 +74,7 @@ const gnavItems = [
     <div
       id="gnav"
       aria-hidden="true"
-      class="gnav container absolute right-0 top-full flex w-screen flex-col bg-base-100 py-4 transition-all lg:relative lg:top-0 lg:w-auto lg:flex-row lg:items-center lg:py-0">
+      class="bg-base-100 absolute top-full right-0 container flex h-[calc(100dvh---spacing(header-height))] w-screen flex-col overflow-auto py-4 transition-all aria-hidden:h-0 aria-hidden:overflow-clip aria-hidden:opacity-0 md:h-auto lg:relative lg:top-0 lg:w-auto lg:flex-row lg:items-center lg:py-0">
       <ul class="lg:flex">
         {
           gnavItems.map(({ title, href }) => (
@@ -96,7 +90,10 @@ const gnavItems = [
   </nav>
 </header>
 
-<script define:vars={{ breakpoint: twConfig.theme.screens.lg }} is:inline>
+<script is:inline>
+  const breakpoint = getComputedStyle(
+    document.documentElement
+  ).getPropertyValue('--breakpoint-lg')
   const toggle = document.getElementById('gnav-toggle')
   const gnavId = toggle && toggle.getAttribute('aria-controls')
   const gnav = gnavId && document.getElementById(gnavId)
@@ -120,25 +117,3 @@ const gnavItems = [
     )
   })
 </script>
-
-<style is:global>
-  :root {
-    --header-height: theme('spacing.16');
-  }
-
-  .gnav {
-    height: calc(100dvh - theme('spacing.header-height'));
-    opacity: 1;
-    overflow: auto;
-
-    &[aria-hidden='true'] {
-      height: 0;
-      opacity: 0;
-      overflow: hidden;
-    }
-
-    @screen md {
-      height: auto;
-    }
-  }
-</style>

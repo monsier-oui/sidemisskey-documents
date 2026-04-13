@@ -1,7 +1,9 @@
 ---
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import twemoji from '@twemoji/api'
 import dayjs from 'dayjs'
-import { HiChevronDown } from 'react-icons/hi2'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import TOC from '@/components/TOC.astro'
@@ -35,6 +37,10 @@ page.body = page.body
     'alert-warning"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>'
   )
 const headings = getHeadings(page.body)
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.tz.setDefault('Asia/Tokyo')
 
 const props: PageProps = {
   title: page.title,
@@ -75,9 +81,9 @@ const props: PageProps = {
   {
     headings.length > 3 && (
       <details class="my-8 w-fit">
-        <summary class="flex cursor-pointer list-none items-center p-2 text-lg font-medium">
+        <summary class="grid cursor-pointer list-none grid-cols-[1fr_auto] items-center gap-x-2 p-2 text-lg font-medium">
           目次
-          <HiChevronDown className="ml-2" />
+          <ChevronDownIcon className="size-4" />
         </summary>
         <div class="bg-base-200 p-4 md:px-6">
           <TOC headings={headings} />

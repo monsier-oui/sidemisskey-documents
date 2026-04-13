@@ -1,3 +1,54 @@
+@import 'tailwindcss';
+@plugin 'daisyui' {
+  themes:
+    winter --default,
+    sunset --prefersdark;
+}
+@plugin 'daisyui/theme' {
+  name: 'winter';
+  default: true;
+  --color-primary: oklch(0.6267 0.1085 184.44);
+  --color-secondary: oklch(0.6145 0.1982 25.48);
+}
+@plugin 'daisyui/theme' {
+  name: 'sunset';
+  default: false;
+  prefersdark: true;
+  --color-primary: oklch(0.6267 0.1085 184.44);
+  --color-secondary: oklch(0.6145 0.1982 25.48);
+}
+
+@source inline('alert-info');
+@source inline('alert-warning');
+
+@theme {
+  --spacing-header-height: theme('spacing.16');
+
+  --font-sans:
+    YakuHanJP, 'Noto Sans JP Variable', ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@custom-variant aria-current (&[aria-current='current']);
+
+@utility container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1rem;
+
+  @variant lg {
+    padding-inline: 0;
+  }
+
+  @variant sm {
+    max-width: var(--breakpoint-sm);
+  }
+
+  @variant md {
+    max-width: var(--breakpoint-md);
+  }
+}
+
 a:not([class]) {
   @apply hover:underline;
 }

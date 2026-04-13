@@ -1,5 +1,5 @@
-/// <reference path="../.astro/types.d.ts" />
 /// <reference types="astro/client" />
+/// <reference types="astro/jsx-runtime" />
 
 export interface PageProps {
   title?: string
